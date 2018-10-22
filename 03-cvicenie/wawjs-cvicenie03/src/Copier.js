@@ -13,7 +13,7 @@ class Copier extends EventEmiter {
     this._from = from;
     this._to = to;
   }
-  copy() {
+  copy(callback) {
 
     let wasErr;
 
@@ -25,6 +25,7 @@ class Copier extends EventEmiter {
         wasErr = true;
         this.emit("error", err);
       }
+      this.emit("close");
     });
     stream.on("close", () => {
       !wasErr && this.emit("finish", {
@@ -35,6 +36,9 @@ class Copier extends EventEmiter {
     stream.on("error", (err) => {
       this.emit("error", err);
     });
+    if (callback){
+      callback();
+    }
   }
 }
 
